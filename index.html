@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Technology Demo & Tracker</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for aesthetic enhancements */
+        .container {
+            min-height: 100vh;
+        }
+        .section {
+            min-height: 80vh; /* Ensure sections are long enough for scrolling */
+            padding: 4rem 1rem;
+        }
+        .event-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+    <!-- Google Analytics 4 (GA4) Tracking Snippet -->
+    <!-- !!! IMPORTANT: REPLACE 'G-PLACEHOLDER-ID' with your actual GA4 Measurement ID !!! -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER-ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      // The 'config' line tracks the initial page view (simulating a 'pixel load')
+      gtag('config', 'G-PLACEHOLDER-ID'); 
+
+      // Function to display a success message to the user
+      function showSuccessMessage(message) {
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        messageText.textContent = message;
+        messageBox.classList.remove('hidden');
+        messageBox.classList.add('opacity-100');
+        setTimeout(() => {
+            messageBox.classList.remove('opacity-100');
+            messageBox.classList.add('hidden');
+        }, 3000);
+      }
+
+      // 1. SCROLL DEPTH TRACKING
+      let scroll75Sent = false;
+      window.addEventListener('scroll', () => {
+        const scrollPosition = window.scrollY + window.innerHeight;
+        const totalHeight = document.documentElement.scrollHeight;
+        const scrollPercentage = (scrollPosition / totalHeight) * 100;
+        
+        if (scrollPercentage >= 75 && !scroll75Sent) {
+          // Fire a custom event when 75% scroll depth is reached
+          gtag('event', 'tech_scroll_depth', {
+            'event_category': 'Engagement_Tracking',
+            'event_label': 'Scroll_75_Percent',
+            'scroll_percentage': 75
+          });
+          scroll75Sent = true; // Prevents the event from firing repeatedly
+          console.log('GA Event Fired: tech_scroll_depth (75%)');
+        }
+      });
+
+
+      // 2. LEFT CLICK EVENT TRACKING (Heatmap / Important Button)
+      function trackButtonClick() {
+        gtag('event', 'tech_button_click', {
+          'event_category': 'Interaction_Tracking',
+          'event_label': 'Start_Trial_Click',
+          'button_name': 'Start_Free_Trial'
+        });
+        console.log('GA Event Fired: tech_button_click');
+        showSuccessMessage('GA Event Sent: Button Click (tech_button_click)');
+      }
+
+      // 3. FORM SUBMISSION TRACKING (Lead Capture / Conversion)
+      function trackFormSubmission(event) {
+        event.preventDefault(); // Stop default form submission
+        const form = document.getElementById('leadForm');
+        const email = form.querySelector('input[name="email"]').value;
+
+        if (email) {
+          // Fire a custom event for lead conversion
+          gtag('event', 'tech_lead_capture', {
+            'event_category': 'Conversion',
+            'event_label': 'Newsletter_Signup',
+            'email_provided': true,
+            // You can optionally use a custom dimension/metric here if configured in GA4
+            'value': 10 // Example: Value for a marketing lead
+          });
+
+          console.log('GA Event Fired: tech_lead_capture');
+          showSuccessMessage('GA Event Sent: Form Submission (tech_lead_capture)');
+          form.reset(); // Clear the form
+        }
+      }
+
+      // 4. VIDEO INTERACTION TRACKING
+      function trackVideoStart() {
+        gtag('event', 'tech_video_interaction', {
+          'event_category': 'Media_Tracking',
+          'event_label': 'Video_Start',
+          'video_title': 'Introduction_Video',
+          'video_percent': 0
+        });
+        console.log('GA Event Fired: tech_video_interaction (Start)');
+        showSuccessMessage('GA Event Sent: Video Start (tech_video_interaction)');
+      }
+      
+      // 5. RIGHT-CLICK (CONTEXT MENU) TRACKING
+      function trackRightClick(event) {
+          event.preventDefault(); // Prevent the browser's context menu from appearing
+          gtag('event', 'tech_right_click', {
+              'event_category': 'Friction_Tracking',
+              'event_label': 'Right_Click_Context_Menu',
+              'element_id': event.currentTarget.id
+          });
+          console.log('GA Event Fired: tech_right_click');
+          showSuccessMessage('GA Event Sent: Right Click (tech_right_click)');
+          return false; // Crucial for preventing default context menu
+      }
+
+      // 6. HOVER/ATTENTION TRACKING
+      let hoverCardSent = false;
+      function trackHoverCard(elementId) {
+          if (!hoverCardSent) {
+              gtag('event', 'tech_hover_card', {
+                  'event_category': 'Engagement_Tracking',
+                  'event_label': 'High_Attention_Hover',
+                  'element_id': elementId
+              });
+              hoverCardSent = true;
+              console.log('GA Event Fired: tech_hover_card');
+              showSuccessMessage('GA Event Sent: Hover Attention (tech_hover_card)');
+          }
+      }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans antialiased text-gray-800">
+
+    <!-- Floating Message Box (for user feedback) -->
+    <div id="messageBox" class="fixed top-5 right-5 p-4 rounded-lg bg-green-500 text-white shadow-xl hidden opacity-0 transition-opacity duration-300 z-50">
+        <span id="messageText" class="font-medium"></span>
+    </div>
+
+    <div class="container mx-auto">
+        <!-- Header -->
+        <header class="bg-white shadow-md p-6 sticky top-0 z-10">
+            <div class="flex justify-between items-center max-w-7xl mx-auto">
+                <h1 class="text-3xl font-extrabold text-indigo-700">GA Tracker Demo</h1>
+                <p class="text-sm font-medium text-gray-500">
+                    Your GA ID: <span class="font-mono text-indigo-600">G-PLACEHOLDER-ID</span> 
+                    <span class="text-red-500 font-semibold">(REPLACE ME)</span>
+                </p>
+            </div>
+        </header>
+
+        <!-- Hero Section & Instructions -->
+        <section class="section bg-indigo-600 text-white flex flex-col justify-center items-center text-center p-8">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Tracking Technology Validation Hub</h2>
+            <p class="text-xl max-w-3xl mb-8 opacity-90">
+                Interact with the elements below to fire specific Google Analytics 4 (GA4) events. 
+                Check your GA4 **Realtime** report to see the data flow instantly!
+            </p>
+            <div class="bg-yellow-200 text-yellow-900 p-4 rounded-lg shadow-lg max-w-xl">
+                <p class="font-bold">SETUP REQUIRED:</p>
+                <p class="text-sm mt-1">
+                    **1. Find your GA4 Measurement ID** (e.g., G-XXXXXXX).
+                    <br> **2. Replace** the `G-PLACEHOLDER-ID` in the HTML file's `<head>` with your actual ID.
+                </p>
+            </div>
+        </section>
+
+        <!-- Tracking Elements Grid -->
+        <main class="p-8 md:p-12 max-w-7xl mx-auto">
+            <h3 class="text-3xl font-bold text-gray-700 mb-8 border-b-2 border-indigo-200 pb-2">Simulated Tracking Pixels & Events</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Card 1: LEFT CLICK (Call-to-Action) -->
+                <div class="event-card p-6 bg-white rounded-xl shadow-lg border border-indigo-100">
+                    <div class="text-3xl mb-3">🖱️</div>
+                    <h4 class="text-xl font-semibold mb-2">1. Essential Click Tracking</h4>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        Simulates tracking a high-value button click (left click), often used for A/B testing.
+                    </p>
+                    <button id="startTrialButton" onclick="trackButtonClick()"
+                            class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition duration-150 transform hover:scale-105 shadow-md">
+                        Start Free Trial
+                    </button>
+                    <p class="mt-3 text-xs font-mono text-gray-500">GA Event: <code class="bg-gray-100 p-1 rounded">tech_button_click</code></p>
+                </div>
+
+                <!-- Card 2: Form Submission (Conversion) -->
+                <div class="event-card p-6 bg-white rounded-xl shadow-lg border border-indigo-100">
+                    <div class="text-3xl mb-3">📧</div>
+                    <h4 class="text-xl font-semibold mb-2">2. Lead Capture/Goal Event</h4>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        Simulates a successful conversion event, like a newsletter sign-up, tracking a value of 10.
+                    </p>
+                    <form id="leadForm" onsubmit="trackFormSubmission(event)" class="space-y-3">
+                        <input type="email" name="email" placeholder="Enter your email" required 
+                               class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                        <button type="submit"
+                                class="w-full py-2 bg-pink-500 text-white font-bold rounded-lg hover:bg-pink-600 transition duration-150 shadow-md">
+                            Subscribe Now
+                        </button>
+                    </form>
+                    <p class="mt-3 text-xs font-mono text-gray-500">GA Event: <code class="bg-gray-100 p-1 rounded">tech_lead_capture</code></p>
+                </div>
+
+                <!-- Card 3: Media Interaction (Video Start) -->
+                <div class="event-card p-6 bg-white rounded-xl shadow-lg border border-indigo-100">
+                    <div class="text-3xl mb-3">🎥</div>
+                    <h4 class="text-xl font-semibold mb-2">3. Video Interaction Tracking</h4>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        Simulates the start of a video play, allowing you to measure media engagement.
+                    </p>
+                    <div class="relative bg-gray-200 h-24 flex items-center justify-center rounded-lg">
+                        <span class="text-gray-500">Video Player Placeholder</span>
+                        <button onclick="trackVideoStart()"
+                                class="absolute inset-0 flex items-center justify-center text-white bg-black bg-opacity-40 hover:bg-opacity-60 transition duration-150 rounded-lg">
+                                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
+                        </button>
+                    </div>
+                    <p class="mt-3 text-xs font-mono text-gray-500">GA Event: <code class="bg-gray-100 p-1 rounded">tech_video_interaction</code></p>
+                </div>
+
+                <!-- Card 4: RIGHT-CLICK Tracking (Friction) -->
+                <div id="rightClickCard" oncontextmenu="return trackRightClick(event)" class="event-card p-6 bg-white rounded-xl shadow-lg border border-red-100 cursor-context-menu">
+                    <div class="text-3xl mb-3">🛑</div>
+                    <h4 class="text-xl font-semibold mb-2">4. Right-Click Tracking</h4>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        **Right-click** inside this card. This simulates tracking user friction or attempts to save content.
+                    </p>
+                    <div class="text-center p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 font-medium">
+                        Right-Click Anywhere Here
+                    </div>
+                    <p class="mt-3 text-xs font-mono text-gray-500">GA Event: <code class="bg-gray-100 p-1 rounded">tech_right_click</code></p>
+                </div>
+                
+                <!-- Card 5: HOVER Tracking (Attention) -->
+                <div id="hoverCard" onmouseover="trackHoverCard(this.id)" class="event-card p-6 bg-white rounded-xl shadow-lg border border-green-100 cursor-pointer">
+                    <div class="text-3xl mb-3">👁️</div>
+                    <h4 class="text-xl font-semibold mb-2">5. Hover/Attention Tracking</h4>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        **Hover** your mouse over this card. This tracks prolonged attention on valuable content (fires once).
+                    </p>
+                    <div class="text-center p-4 bg-green-50 border border-green-200 rounded-lg text-green-600 font-medium">
+                        Hover Over This Card
+                    </div>
+                    <p class="mt-3 text-xs font-mono text-gray-500">GA Event: <code class="bg-gray-100 p-1 rounded">tech_hover_card</code></p>
+                </div>
+
+            </div>
+
+            <!-- Scroll Depth Tracking Area -->
+            <div class="section bg-gray-100 mt-12 p-8 rounded-xl shadow-inner">
+                <div class="text-3xl mb-3">📜</div>
+                <h4 class="text-2xl font-semibold mb-4 text-gray-700">6. Scroll Depth Tracking</h4>
+                <p class="text-gray-600 mb-6">
+                    This event fires automatically when you scroll 75% of the way down this page. Keep scrolling to trigger it!
+                </p>
+                <p class="mt-3 text-xs font-mono text-gray-500">GA Event: <code class="bg-gray-200 p-1 rounded">tech_scroll_depth</code> (Fires once at 75%)</p>
+                
+                <!-- Placeholder content to force scrolling -->
+                <div class="space-y-6 mt-8 text-gray-500 text-sm">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p>Curabitur pretium, odio id egestas tincidunt, justo ipsum commodo nunc, id dapibus eros metus sit amet mauris. Quisque in feugiat urna. Sed vel mi a lectus placerat malesuada. Nullam ut mi vel justo iaculis fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aliquam erat volutpat. Fusce feugiat sapien vel libero tincidunt, nec malesuada massa viverra. Donec interdum felis vel sapien tincidunt, a varius sapien ullamcorper. Phasellus at augue at lectus placerat hendrerit.</p>
+                    <p>Maecenas id nisi eu libero euismod malesuada. Sed ac purus eget nunc finibus volutpat. Sed non neque et dui vestibulum vestibulum. Cras efficitur, nunc a malesuada ultricies, velit odio ullamcorper sapien, a lacinia nulla ipsum non purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Proin bibendum justo vel ligula facilisis, a bibendum mi eleifend. Suspendisse potenti. Nam nec turpis eu libero feugiat convallis.</p>
+                    <p>Aliquam a quam vel felis blandit dapibus. Ut non lectus eu massa pulvinar interdum. Sed vel sapien nec metus bibendum pulvinar. Proin non arcu ac urna eleifend egestas. Nulla facilisi. Curabitur vitae ante nec mi tincidunt venenatis. In hac habitasse platea dictumst. Sed ac purus eget nunc finibus volutpat. Sed non neque et dui vestibulum vestibulum. Cras efficitur, nunc a malesuada ultricies, velit odio ullamcorper sapien, a lacinia nulla ipsum non purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Proin bibendum justo vel ligula facilisis, a bibendum mi eleifend. Suspendisse potenti. Nam nec turpis eu libero feugiat convallis.</p>
+                    <p>This is content line 5. Keep scrolling to hit the 75% mark! This is content line 5. Keep scrolling to hit the 75% mark! This is content line 5. Keep scrolling to hit the 75% mark! This is content line 5. Keep scrolling to hit the 75% mark!</p>
+                    <p>This is content line 6. Almost there! This is content line 6. Almost there! This is content line 6. Almost there! This is content line 6. Almost there!</p>
+                    <p>This is content line 7. You should be near 75% now! This is content line 7. You should be near 75% now! This is content line 7. You should be near 75% now! This is content line 7. You should be near 75% now!</p>
+                    <p>This is content line 8. Content is added to ensure sufficient length for scroll tracking. Content is added to ensure sufficient length for scroll tracking. Content is added to ensure sufficient length for scroll tracking. Content is added to ensure sufficient length for scroll tracking. Content is added to ensure sufficient length for scroll tracking.</p>
+                    <p>This is content line 9. Content is added to ensure sufficient length for scroll tracking. Content is added to ensure sufficient length for scroll tracking. Content is added to ensure sufficient length for scroll tracking. Content is added to ensure sufficient length for scroll tracking. Content is added to ensure sufficient length for scroll tracking.</p>
+                    <p>This is content line 10. You should definitely have triggered the event by now. This is content line 10. You should definitely have triggered the event by now. This is content line 10. You should definitely have triggered the event by now. This is content line 10. You should definitely have triggered the event by now. This is content line 10. You should definitely have triggered the event by now.</p>
+                </div>
+            </div>
+            
+            <div class="pt-16 pb-20 text-center text-gray-500">
+                <p>&copy; 2025 GA Tracking Demo. Start tracking in your Realtime report!</p>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
