@@ -23,16 +23,15 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
     </style>
-    <!-- Google Analytics 4 (GA4) Tracking Snippet --> 
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-S4J9MCMCEF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-S4J9MCMCEF');
-</script>
+    <!-- Google Analytics 4 (GA4) Tracking Snippet -->
+    <!-- The GA Measurement ID G-S4J9MCMCEF is now configured below. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S4J9MCMCEF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      // The 'config' line tracks the initial page view (simulating a 'pixel load')
+      gtag('config', 'G-S4J9MCMCEF'); 
 
       // Function to display a success message to the user
       function showSuccessMessage(message) {
@@ -63,6 +62,7 @@
           });
           scroll75Sent = true; // Prevents the event from firing repeatedly
           console.log('GA Event Fired: tech_scroll_depth (75%)');
+          showSuccessMessage('GA Event Sent: Scroll Depth (tech_scroll_depth @ 75%)');
         }
       });
 
@@ -154,8 +154,7 @@
             <div class="flex justify-between items-center max-w-7xl mx-auto">
                 <h1 class="text-3xl font-extrabold text-indigo-700">GA Tracker Demo</h1>
                 <p class="text-sm font-medium text-gray-500">
-                    Your GA ID: <span class="font-mono text-indigo-600">G-PLACEHOLDER-ID</span> 
-                    <span class="text-red-500 font-semibold">(REPLACE ME)</span>
+                    Your GA ID: <span class="font-mono text-indigo-600">G-S4J9MCMCEF</span> 
                 </p>
             </div>
         </header>
@@ -168,10 +167,11 @@
                 Check your GA4 **Realtime** report to see the data flow instantly!
             </p>
             <div class="bg-yellow-200 text-yellow-900 p-4 rounded-lg shadow-lg max-w-xl">
-                <p class="font-bold">SETUP REQUIRED:</p>
+                <p class="font-bold">GA4 ID Configured:</p>
                 <p class="text-sm mt-1">
-                    **1. Find your GA4 Measurement ID** (e.g., G-XXXXXXX).
-                    <br> **2. Replace** the `G-PLACEHOLDER-ID` in the HTML file's `<head>` with your actual ID.
+                    The Google Analytics Measurement ID 
+                    <span class="font-mono font-semibold">G-S4J9MCMCEF</span> is now active.
+                    <br> Start interacting below to see events in your GA4 Realtime report!
                 </p>
             </div>
         </section>
